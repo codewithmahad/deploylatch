@@ -1,0 +1,16 @@
+[Unit]
+Description=DeployLatch Java demo service
+After=network.target
+
+[Service]
+Type=exec
+User=deploylatch
+Group=deploylatch
+WorkingDirectory=/opt/deploylatch/current
+ExecStart=/usr/bin/java -jar /opt/deploylatch/current/app.jar
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
