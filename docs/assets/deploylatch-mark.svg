@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">DeployLatch mark</title>
+  <desc id="desc">Two interlocking brackets form a latch. An orange sliding bolt joins the two sides.</desc>
+  <rect width="128" height="128" rx="28" fill="#24272E"/>
+  <path d="M57 29H35V99H57M79 29H93V99H71" stroke="#F5F6F8" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M48 64H80" stroke="#7298FF" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="80" cy="64" r="10" fill="#7298FF"/>
+  <circle cx="80" cy="64" r="3" fill="#24272E"/>
+</svg>

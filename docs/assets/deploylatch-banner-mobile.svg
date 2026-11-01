@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="540" viewBox="0 0 640 540" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">DeployLatch</title>
+  <desc id="desc">Linux deployments, with a rollback plan. Bash, Java, Ubuntu. An Operating Systems course project.</desc>
+  <rect width="640" height="540" rx="16" fill="#24272E"/>
+  <path d="M0 524H640V540H0Z" fill="#7298FF"/>
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <text x="36" y="52" fill="#C4C9D4" font-size="16" font-weight="600" letter-spacing="2">OPERATING SYSTEMS / LINUX</text>
+    <path d="M36 76H604" stroke="#454B57"/>
+    <text x="32" y="164" fill="#F5F6F8" font-size="74" font-weight="700" letter-spacing="-3">DeployLatch<tspan fill="#7298FF">.</tspan></text>
+    <text x="36" y="222" fill="#F5F6F8" font-size="32" letter-spacing="-.6">Linux deployments,</text>
+    <text x="36" y="265" fill="#F5F6F8" font-size="32" letter-spacing="-.6">with a rollback plan.</text>
+    <text x="36" y="465" fill="#C4C9D4" font-size="18" font-weight="600" letter-spacing="2">BASH</text>
+    <circle cx="119" cy="459" r="2.5" fill="#7298FF"/>
+    <text x="142" y="465" fill="#C4C9D4" font-size="18" font-weight="600" letter-spacing="2">JAVA</text>
+    <circle cx="222" cy="459" r="2.5" fill="#7298FF"/>
+    <text x="245" y="465" fill="#C4C9D4" font-size="18" font-weight="600" letter-spacing="2">UBUNTU</text>
+  </g>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M36 352H103M91 345L103 352L91 359M221 352H290M278 345L290 352L278 359" stroke="#C4C9D4" stroke-width="2"/>
+    <rect x="120" y="305" width="84" height="94" rx="12" fill="#303540" stroke="#606A7D"/>
+    <path d="M157 322H139V382H153M175 322H186V382H170" stroke="#F5F6F8" stroke-width="6"/>
+    <path d="M150 352H177" stroke="#7298FF" stroke-width="8"/>
+    <circle cx="177" cy="352" r="7" fill="#7298FF"/>
+    <circle cx="177" cy="352" r="2" fill="#24272E"/>
+    <path d="M335 352H563C584 352 590 364 590 380C590 396 580 408 563 408H247" stroke="#7298FF" stroke-width="2"/>
+    <path d="M258 401L246 408L258 415" stroke="#7298FF" stroke-width="2"/>
+  </g>
+</svg>
