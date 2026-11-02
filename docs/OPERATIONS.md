@@ -6,15 +6,15 @@ It assumes you own the VM and have sudo access. DeployLatch is a course project,
 
 ## 1. Requirements
 
-- Windows with PowerShell, Git, and JDK 25 (including `javac` and `jar`)
-- Ubuntu VM with Java 25, Bash, curl, systemd, and SSH access
+- Windows with PowerShell, Git, JDK 25 (including `javac` and `jar`), and the OpenSSH `scp` client
+- Ubuntu VM with Java 25, Bash, curl, flock (from util-linux), systemd, and SSH access
 - Both machines able to communicate over the local VMware network
 
 On Ubuntu, install missing tools if needed:
 
 ```bash
 sudo apt update
-sudo apt install openjdk-25-jre-headless curl openssh-server
+sudo apt install openjdk-25-jre-headless curl util-linux openssh-server
 sudo systemctl enable --now ssh
 ```
 
@@ -145,6 +145,8 @@ Manual rollback to the previous release:
 sudo bash ~/deploylatch-staging/deploylatch.sh rollback
 ```
 
+After the demonstration above, this restores v1 and makes v2 the new manual rollback target.
+
 Inspect the service and its logs:
 
 ```bash
@@ -153,6 +155,8 @@ journalctl -u deploylatch-demo.service -n 40 --no-pager
 ```
 
 Available CLI actions: `deploy`, `rollback`, `status`, `history`, and `help`.
+
+Deployment actions, status, and history require sudo and take the same exclusive lock. `history` shows the last 20 records from `/var/log/deploylatch/deployments.log`; timestamps are UTC. Java process output is available through `journalctl`.
 
 Each deployment requires a new release ID. Failed release directories remain under `/opt/deploylatch/releases/` for inspection; deploying another JAR with the same release ID will be refused.
 

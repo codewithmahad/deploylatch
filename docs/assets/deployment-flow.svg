@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" fill="none" role="img" aria-labelledby="title desc">
-  <title id="title">Deployment and rollback design</title>
-  <desc id="desc">Preserve the previous version, start the update, and check its health. Pass: keep the update. Fail: restore the previous version and check recovery. </desc>
+  <title id="title">Deployment and recovery flow</title>
+  <desc id="desc">Store a new release, restart the service, and verify health and release ID. Keep a passing release. If deployment fails, restore the old release and verify recovery.</desc>
   <rect x="1" y="1" width="1278" height="318" rx="16" fill="#F5F6F8" stroke="#DADEE7" stroke-width="2"/>
   <g font-family="'Segoe UI', Arial, sans-serif">
     <text x="38" y="39" fill="#626B7A" font-size="12" font-weight="600" letter-spacing="2">DEPLOYMENT / RECOVERY FLOW</text>
@@ -8,17 +8,17 @@
     <text x="38" y="99" fill="#527AE0" font-size="12" font-weight="600" letter-spacing="1.5">01</text>
     <text x="334" y="99" fill="#527AE0" font-size="12" font-weight="600" letter-spacing="1.5">02</text>
     <text x="648" y="99" fill="#527AE0" font-size="12" font-weight="600" letter-spacing="1.5">03</text>
-    <text x="38" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Keep a copy</text>
+    <text x="38" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Save the release</text>
     <text x="334" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Start the update</text>
     <text x="648" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Check health</text>
-    <text x="38" y="170" fill="#626B7A" font-size="16">Preserve the previous version.</text>
+    <text x="38" y="170" fill="#626B7A" font-size="16">Store a versioned JAR.</text>
     <text x="334" y="170" fill="#626B7A" font-size="16">Restart the Java service.</text>
-    <text x="648" y="170" fill="#626B7A" font-size="16">Request /health with a timeout.</text>
+    <text x="648" y="170" fill="#626B7A" font-size="16">Check health and release ID.</text>
     <rect x="1010" y="99" width="232" height="57" rx="8" fill="#E4EBFF"/>
     <text x="1028" y="122" fill="#365DAE" font-size="11" font-weight="700" letter-spacing="1">PASS</text>
     <text x="1028" y="143" fill="#24272E" font-size="17" font-weight="600">Keep the update</text>
     <text x="968" y="210" fill="#527AE0" font-size="12" font-weight="700" letter-spacing="1">FAIL</text>
-    <text x="38" y="255" fill="#24272E" font-size="19" font-weight="600">Restore the previous version</text>
+    <text x="38" y="255" fill="#24272E" font-size="19" font-weight="600">Restore the old release</text>
     <text x="38" y="283" fill="#626B7A" font-size="15">Restart it, then check recovery.</text>
   </g>
   <g stroke-linecap="round" stroke-linejoin="round" stroke-width="2">

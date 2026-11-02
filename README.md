@@ -1,68 +1,48 @@
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="docs/assets/deploylatch-banner-mobile.svg">
-    <img src="docs/assets/deploylatch-banner.svg" alt="DeployLatch — Linux, Bash, and Java" width="100%">
+    <img src="docs/assets/deploylatch-banner.svg" alt="DeployLatch — Linux deployments, with a rollback plan." width="100%">
   </picture>
 </p>
 
 <p align="center">
-  A small Linux deployment and rollback tool built with Bash, systemd, and Java.
+  A Bash tool for deploying a Java service on Linux and recovering from failed updates.<br>
+  <sub>Operating Systems course project · UBIT, University of Karachi</sub>
 </p>
 
 <p align="center">
-  <sub>Operating Systems · UBIT, University of Karachi · Tested on Ubuntu in VMware</sub>
-</p>
-
-<p align="center">
-  <a href="#what-it-does">What it does</a> &nbsp;·&nbsp;
   <a href="#how-it-works">Workflow</a> &nbsp;·&nbsp;
-  <a href="#demo-result">Demo result</a> &nbsp;·&nbsp;
+  <a href="#the-demonstration">Demo</a> &nbsp;·&nbsp;
   <a href="#run-it">Run it</a> &nbsp;·&nbsp;
-  <a href="#lets-connect">Connect</a>
+  <a href="#project-notes">Project notes</a>
 </p>
 
 <img src="docs/assets/linux-tux.png" alt="Tux, the Linux mascot" align="right" width="144">
 
 ## Why I built this
 
-DeployLatch started as an Operating Systems course project at UBIT, University of Karachi. I wanted to use Linux and Bash for something related to the Java backend development I was learning.
+I built DeployLatch for my Operating Systems course to use the Linux and Bash skills from the lab alongside Java backend development. I wanted to work through how an application starts as a service, how an update is checked, and how to recover when something goes wrong.
 
-The idea is simple: when a new version of an application is installed, it needs to start successfully and respond correctly. If it fails, the previous working version should still be available.
-
-This project puts those steps together on one local Ubuntu virtual machine.
+The result is a small deployment tool for **one Java service on one Ubuntu VM**. It brings together shell scripting, Linux services, permissions, HTTP checks, and release management.
 
 <br clear="right">
 
-## What it does
-
-- Installs versioned Java JAR releases under `/opt/deploylatch/releases/`.
-- Uses a `current` symbolic link to select the active release.
-- Starts and restarts the application through a `systemd` service running as a dedicated user.
-- Checks the application's HTTP health and version endpoints using `curl`.
-- Restores the previous release automatically if a deployment fails its health check.
-- Supports manual rollback, service status, and timestamped deployment history.
-- Uses a file lock to prevent two deployments from running at the same time.
-
-The application is intentionally small. DeployLatch handles **one Java service on one Ubuntu VM**; it is not a cloud deployment platform.
-
 ## How it works
+
+Each JAR gets its own release directory. A `current` symbolic link selects the running release; `previous` identifies the manual rollback target. systemd runs the application under a dedicated, non-root account.
 
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="docs/assets/deployment-flow-mobile.svg">
-    <img src="docs/assets/deployment-flow.svg" alt="Save a new release, restart the service, check health, and keep or roll back the release" width="100%">
+    <img src="docs/assets/deployment-flow.svg" alt="Install a versioned JAR, switch the active release, restart the service, and check health and release ID. Restore and verify the old release if deployment fails." width="100%">
   </picture>
 </p>
 
-1. Save the incoming JAR in a new release directory.
-2. Point `current` to that release and restart the systemd service.
-3. Request `/health` and `/version`, checking both the response and expected release ID.
-4. Keep a passing release. If the check fails, restore the old release, restart the service, and check it again.
-5. Record the outcome in the deployment history.
+The script accepts an update only when `/health` returns `OK` and `/version` matches the requested release ID. If startup or verification fails, it switches back to the old release, restarts it, and checks recovery. A file lock prevents concurrent deployments; outcomes are recorded with UTC timestamps.
 
-## Demo result
+## The demonstration
 
-I tested the deployment and recovery flow on **Ubuntu 26.04.1 LTS running in VMware**.
+The course demonstration ran on **Ubuntu 26.04.1 LTS in VMware**. Starting from v1, v2 deploys successfully. v3 deliberately returns HTTP 503, triggering a rollback to v2.
 
 ```text
 Deploying v2
@@ -78,98 +58,184 @@ Service: active
 Health: OK
 ```
 
-The build includes three demonstration releases: **v1** and **v2** respond as healthy applications; **v3** deliberately responds with HTTP 503 so the rollback can be tested. The log recorded a successful v2 deployment followed by a rollback from v3 to v2.
-
-<img src="docs/assets/java-sticker.svg" alt="Java" align="right" width="124">
-
-## Inside the project
-
-The Java demo uses the JDK's built-in HTTP server, with no external framework. It listens on `127.0.0.1:8080` and provides two endpoints:
-
-- `GET /health` — returns `200 OK` for a healthy release or `503` for the deliberately unhealthy release.
-- `GET /version` — identifies the running release (`v1`, `v2`, or `v3`).
-
-Bash handles deployment control flow and recovery. systemd manages the application process. The PowerShell build script compiles the Java source and packages the three demo JARs.
-
-<br clear="right">
-
-### Project files
-
-```text
-deploylatch/
-├── demo-app/
-│   └── src/main/java/dev/deploylatch/demo/DemoServer.java
-├── scripts/
-│   ├── build-demo.ps1
-│   └── deploylatch.sh
-├── systemd/
-│   └── deploylatch-demo.service
-├── docs/
-│   ├── OPERATIONS.md
-│   └── assets/
-├── .gitattributes
-├── .gitignore
-└── README.md
-```
-
-Build artifacts are generated locally in `demo-app/dist/` and aren't committed to the repository.
+The v3 deployment command returns a non-zero exit status even after successful recovery: the requested update failed, while the old service was restored.
 
 ## Run it
 
-**Requirements:** Windows with JDK 25 and PowerShell to build the demo; Ubuntu with Java 25, Bash, curl, and systemd to run it.
+The demonstrated setup builds the JARs on **Windows with PowerShell and JDK 25**, then runs them on **Ubuntu with Java 25, Bash, curl, flock, and systemd**. SSH/SCP transfers the files to the VM.
 
-Build the demonstration JARs from the repository root on Windows:
+<details>
+<summary><strong>Build and run the course demo</strong></summary>
+
+In Windows PowerShell:
 
 ```powershell
+git clone https://github.com/codewithmahad/deploylatch.git
+cd deploylatch
 .\scripts\build-demo.ps1
 ```
 
-After completing the Ubuntu setup and copying the files, deploy a new release:
+The build creates `demo-app-v1.jar`, `demo-app-v2.jar`, and `demo-app-v3.jar` in `demo-app/dist/`. v1 and v2 are healthy; v3 is intentionally unhealthy.
+
+Next, follow the [Ubuntu setup guide](docs/OPERATIONS.md) to transfer the files, install v1, create the service account, and enable the systemd service. The commands below assume that setup is complete.
+
+On Ubuntu, deploy v2, then try the failing v3 release:
 
 ```bash
-sudo bash ~/deploylatch-staging/deploylatch.sh deploy ~/deploylatch-staging/demo-app-v2.jar v2
+sudo bash ~/deploylatch-staging/deploylatch.sh deploy \
+  ~/deploylatch-staging/demo-app-v2.jar v2
+
+sudo bash ~/deploylatch-staging/deploylatch.sh deploy \
+  ~/deploylatch-staging/demo-app-v3.jar v3
 ```
 
-To demonstrate failure recovery, deploy the intentionally unhealthy v3 release:
-
-```bash
-sudo bash ~/deploylatch-staging/deploylatch.sh deploy ~/deploylatch-staging/demo-app-v3.jar v3
-```
-
-That command is expected to fail while restoring v2. Check the state and log:
+After v3 fails and restores v2, inspect the result:
 
 ```bash
 sudo bash ~/deploylatch-staging/deploylatch.sh status
 sudo bash ~/deploylatch-staging/deploylatch.sh history
 ```
 
-**Full setup, file-transfer commands, and troubleshooting:** [Ubuntu operations guide](docs/OPERATIONS.md).
+Each deployment needs a unique release ID. Existing release directories, including failed ones, are retained, so rerunning the same release ID is refused.
 
-## Tools and environment
+</details>
 
-| Tool | Used for |
+The [operations guide](docs/OPERATIONS.md) contains the complete setup, file-transfer commands, manual rollback, and troubleshooting.
+
+<img src="docs/assets/java-sticker.svg" alt="Java" align="right" width="132">
+
+## Inside the project
+
+The Java app uses the JDK's built-in HTTP server. A `release.properties` file packaged into each JAR supplies its version and health behavior, so the same source produces all three demo releases.
+
+It listens on `127.0.0.1:8080`. `GET /health` returns HTTP 200 with `OK` for v1/v2, or HTTP 503 with `UNHEALTHY` for v3. `GET /version` returns the release ID. Requests must come from inside the VM. Unknown paths return `404`; other methods on these endpoints return `405`.
+
+Bash owns the deployment and recovery steps. systemd owns the Java process. Keeping the application small leaves the OS behavior easy to follow.
+
+<br clear="right">
+
+## Project notes
+
+<details>
+<summary><strong>Project structure and entry points</strong></summary>
+
+```text
+deploylatch/
+├── scripts/
+│   ├── build-demo.ps1             # Build the three demo JARs on Windows
+│   └── deploylatch.sh             # Deploy, verify, recover, inspect history
+├── systemd/
+│   └── deploylatch-demo.service   # Run the Java process as deploylatch
+├── demo-app/src/main/java/dev/deploylatch/demo/
+│   └── DemoServer.java            # Health and version endpoints
+├── docs/
+│   ├── OPERATIONS.md              # Ubuntu setup and demonstration
+│   └── assets/                    # README artwork and source notices
+├── .gitattributes
+├── .gitignore
+└── README.md
+```
+
+Start with [the Bash script](scripts/deploylatch.sh), [the service unit](systemd/deploylatch-demo.service), or [the Java application](demo-app/src/main/java/dev/deploylatch/demo/DemoServer.java). Generated JARs and classes are excluded from Git.
+
+</details>
+
+<details>
+<summary><strong>Commands, release paths, and logs</strong></summary>
+
+All actions below run on Ubuntu using `sudo bash ~/deploylatch-staging/deploylatch.sh` followed by:
+
+| Action | Result |
 | :--- | :--- |
-| <img src="docs/assets/tech/linux-original.svg" width="20" height="20" alt=""> Ubuntu / Linux | Files, permissions, processes, release paths |
-| <img src="docs/assets/tech/bash-original.svg" width="20" height="20" alt=""> Bash | Deployment, verification, recovery |
-| <img src="docs/assets/tech/java-original.svg" width="20" height="20" alt=""> Java 25 | Demo HTTP service and JAR files |
-| systemd | Service lifecycle and restart behavior |
-| curl | Local HTTP health checks |
-| VMware | Local Ubuntu development VM |
-| <img src="docs/assets/tech/github-original.svg" width="20" height="20" alt=""> Git / GitHub | Source history and changes |
+| `deploy JAR RELEASE_ID` | Install and verify a new release; recover on failure |
+| `rollback` | Switch to `previous`; on success, make the replaced release the new rollback target |
+| `status` | Show current/previous release, service state, and HTTP health |
+| `history` | Show the last 20 deployment records |
+| `help` | Print command usage; sudo is not required for help |
 
-## Scope and limitations
+| Path | Purpose |
+| :--- | :--- |
+| `/opt/deploylatch/releases/<id>/app.jar` | Stored release |
+| `/opt/deploylatch/current` | Active release link |
+| `/opt/deploylatch/previous` | Manual rollback target |
+| `/opt/deploylatch/.deploy.lock` | Deployment lock |
+| `/var/log/deploylatch/deployments.log` | Timestamped deployment outcomes |
 
-This is an educational deployment tool, not a production-ready deployment system. It handles a single local Java application, uses service restarts that cause brief downtime, and checks HTTP health rather than full application correctness. It does not provide remote deployment, Docker/Kubernetes integration, or multi-application orchestration.
+For Java startup errors or process output:
 
-## Course context
+```bash
+journalctl -u deploylatch-demo.service -n 40 --no-pager
+```
 
-**Operating Systems (SE-458)** · Department of Computer Science (UBIT), University of Karachi.
+</details>
 
-This was a five-member course project. I led the project and worked on the implementation, integration, and Ubuntu demonstration. It gave me hands-on experience with Linux services, permissions, release directories, exit codes, shell automation, and failure recovery.
+<details>
+<summary><strong>Verification and failure behavior</strong></summary>
+
+Verification makes up to **8 attempts**, with a **2-second timeout per HTTP request** and a **1-second pause after each unsuccessful attempt**. Both the health body and expected version must match. These are fixed values in the script.
+
+| Situation | Script behavior |
+| :--- | :--- |
+| Unreadable JAR, invalid ID, or existing release ID | Refuse the deployment before switching the active release |
+| Another command holds the deployment lock | Exit instead of running concurrently |
+| New service fails to start or pass verification | Restore the old release and verify it |
+| No valid old release exists | Stop the service, remove `current`, and record `FAILED` |
+| Automatic recovery also fails | Record `ROLLBACK_FAILED` and report failure |
+| Manual rollback target fails | Restore the original active link, attempt a restart, and report failure |
+
+A successful update records `SUCCESS`; successful automatic recovery records `ROLLED_BACK`; a successful manual rollback records `MANUAL_ROLLBACK`. Failed deployments keep a non-zero exit status.
+
+</details>
+
+<details>
+<summary><strong>Design choices and boundaries</strong></summary>
+
+- **Separate release directories:** retain old JARs rather than overwrite the running artifact.
+- **Atomic link replacement:** prepare a temporary symlink, then rename it over `current`. This makes the pointer change atomic, not the whole deployment.
+- **Version-aware verification:** a healthy response alone does not prove the requested release is running.
+- **Dedicated service user:** deployment commands use sudo; the Java process runs as `deploylatch`, with `NoNewPrivileges=true`.
+- **Local HTTP service:** loopback binding keeps the demonstration inside the VM.
+
+Service restarts cause brief downtime. HTTP checks cover availability and release identity, not complete application correctness. The tool targets one local service, retains releases without automatic cleanup, and does not guarantee recovery from an interrupted deployment or a machine failure. Deployment paths, port, and retry settings are fixed in the source.
+
+</details>
+
+<details>
+<summary><strong>Tools and environment</strong></summary>
+
+| Tool | Role |
+| :--- | :--- |
+| <img src="docs/assets/tech/linux-original.svg" width="20" height="20" alt=""> Ubuntu / Linux | Processes, files, permissions, and release paths |
+| <img src="docs/assets/tech/bash-original.svg" width="20" height="20" alt=""> Bash | Deployment control flow, verification, and recovery |
+| <img src="docs/assets/tech/java-original.svg" width="20" height="20" alt=""> Java 25 | Demo HTTP service and JAR packaging |
+| systemd | Service lifecycle and process logs |
+| curl | Local HTTP requests |
+| flock | Exclusive deployment lock |
+| PowerShell | Windows build script |
+| VMware | Ubuntu virtual machine |
+| <img src="docs/assets/tech/github-original.svg" width="20" height="20" alt=""> Git / GitHub | Source history |
+
+</details>
+
+<details>
+<summary><strong>Course context and learning</strong></summary>
+
+<img src="docs/assets/ubit-emblem.png" alt="Department of Computer Science, UBIT, University of Karachi" align="right" width="120">
+
+<p><strong>Operating Systems · SE-458</strong><br>
+Department of Computer Science, UBIT, University of Karachi.</p>
+
+Built for my fourth-semester Operating Systems course in **2026**. I handled the implementation, integration, and Ubuntu demonstration.
+
+The project gave the lab concepts a practical purpose: file permissions protect the releases, symlinks select the active version, exit codes report failures, locking prevents overlapping commands, and systemd manages the process. The Java work connects HTTP responses and JAR packaging to those Linux operations.
+
+<br clear="right">
+
+</details>
 
 ## Let's connect
 
-I'm **Shaikh Mahad Ud Din**, [@codewithmahad](https://github.com/codewithmahad). I'm learning Java backend development and sharing the projects I build along the way.
+I'm **Shaikh Mahad Ud Din**, [@codewithmahad](https://github.com/codewithmahad). I build Java backend projects and share what I learn. Working with Java or Linux, or have a project you'd like to build together? I'd be glad to connect.
 
 <p>
   <a href="https://github.com/codewithmahad"><img src="docs/assets/follow-github.svg" alt="Follow on GitHub" height="38"></a>
