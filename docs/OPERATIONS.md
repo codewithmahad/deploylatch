@@ -1,54 +1,161 @@
-# DeployLatch: Ubuntu deployment guide
+# DeployLatch — Ubuntu setup and demonstration
 
-DeployLatch is a local Ubuntu OS course demonstration. It deploys a Java application, verifies its health and restores the earlier release if the new one fails.
+This guide reproduces the local test setup: build Java JARs on Windows, copy them to an Ubuntu VM, configure the systemd service, and test deployment and rollback.
 
-## Build on Windows
+It assumes you own the VM and have sudo access. DeployLatch is a course project, not a production installation tool.
 
-Run the PowerShell build script at scripts/build-demo.ps1 from the repository root. It creates three JARs under demo-app/dist:
+## 1. Requirements
 
-- demo-app-v1.jar: healthy application
-- demo-app-v2.jar: healthy update
-- demo-app-v3.jar: intentionally unhealthy (HTTP 503)
+- Windows with PowerShell, Git, and JDK 25 (including `javac` and `jar`)
+- Ubuntu VM with Java 25, Bash, curl, systemd, and SSH access
+- Both machines able to communicate over the local VMware network
 
-## Ubuntu preparation
+On Ubuntu, install missing tools if needed:
 
-Install Java 25 and curl. The systemd service assumes that Java is available at /usr/bin/java. Stop any manually running app on port 8080 first.
+```bash
+sudo apt update
+sudo apt install openjdk-25-jre-headless curl openssh-server
+sudo systemctl enable --now ssh
+```
 
-Prepare the Ubuntu environment:
+Find Ubuntu's IP address with `ip -4 -br address`.
 
-    id deploylatch >/dev/null 2>&1 || sudo useradd --system --user-group --no-create-home --shell /usr/sbin/nologin deploylatch
-    sudo install -d -m 0755 /opt/deploylatch/releases/v1
-    sudo install -m 0644 ~/deploylatch-staging/demo-app-v1.jar /opt/deploylatch/releases/v1/app.jar
-    sudo ln -sfnT releases/v1 /opt/deploylatch/current
-    sudo install -m 0644 ~/deploylatch-staging/deploylatch-demo.service /etc/systemd/system/deploylatch-demo.service
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now deploylatch-demo.service
-    curl -fsS http://127.0.0.1:8080/health
-    curl -fsS http://127.0.0.1:8080/version
+## 2. Build the demo applications on Windows
 
-The last commands should print OK and v1.
+Open PowerShell in the repository root:
 
-## Deploy, verify and recover
+```powershell
+.\scripts\build-demo.ps1
+```
 
-Use SCP to transfer the two newer JARs, the Bash script and the service unit into ~/deploylatch-staging/.
+This produces three executable JARs under `demo-app/dist/`:
 
-    sudo bash ~/deploylatch-staging/deploylatch.sh deploy ~/deploylatch-staging/demo-app-v2.jar v2
-    sudo bash ~/deploylatch-staging/deploylatch.sh status
-    sudo bash ~/deploylatch-staging/deploylatch.sh deploy ~/deploylatch-staging/demo-app-v3.jar v3
-    sudo bash ~/deploylatch-staging/deploylatch.sh status
-    sudo bash ~/deploylatch-staging/deploylatch.sh history
+| Release | /health | /version |
+| --- | --- | --- |
+| v1 | HTTP 200, OK | v1 |
+| v2 | HTTP 200, OK | v2 |
+| v3 | HTTP 503, UNHEALTHY | v3 |
 
-The v3 command is expected to exit with an error because /health returns HTTP 503. DeployLatch should restore v2 and leave the Java service healthy.
+v3 intentionally fails the health check to demonstrate rollback.
 
-Manual rollback:
+## 3. Copy the files to Ubuntu
 
-    sudo bash ~/deploylatch-staging/deploylatch.sh rollback
+On Ubuntu, prepare a writable staging directory:
 
-Troubleshooting:
+```bash
+mkdir -p ~/deploylatch-staging
+```
 
-    systemctl status deploylatch-demo.service --no-pager
-    journalctl -u deploylatch-demo.service -n 40 --no-pager
+Back in Windows PowerShell, replace `VM_IP` with the VM's actual IP address and `mahad` with your Ubuntu login if different:
 
-## Project limits
+```powershell
+scp .\demo-app\dist\demo-app-v1.jar .\demo-app\dist\demo-app-v2.jar .\demo-app\dist\demo-app-v3.jar .\systemd\deploylatch-demo.service .\scripts\deploylatch.sh mahad@VM_IP:~/deploylatch-staging/
+```
 
-One Java service on one local VM. Restarts cause brief downtime. HTTP health checks do not prove complete application correctness. Each deployment requires a new release ID. Failed releases remain for investigation. The Java demo listens only on localhost. Use sudo deployment commands only on your own VM.
+Confirm that the five files arrived:
+
+```bash
+ls -lh ~/deploylatch-staging/
+```
+
+## 4. Install the initial release and service
+
+On Ubuntu, stop any manually started demo app on port 8080 before enabling the service.
+
+Verify the Java executable is available at `/usr/bin/java`:
+
+```bash
+command -v java
+```
+
+Then run:
+
+```bash
+id deploylatch >/dev/null 2>&1 || sudo useradd --system --user-group --no-create-home --shell /usr/sbin/nologin deploylatch
+
+sudo install -d -m 0755 /opt/deploylatch/releases/v1
+sudo install -m 0644 ~/deploylatch-staging/demo-app-v1.jar /opt/deploylatch/releases/v1/app.jar
+sudo ln -sfnT releases/v1 /opt/deploylatch/current
+
+sudo install -m 0644 ~/deploylatch-staging/deploylatch-demo.service /etc/systemd/system/deploylatch-demo.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now deploylatch-demo.service
+```
+
+The Java service uses a dedicated non-root Linux account. Its executable JAR is reached through `/opt/deploylatch/current/app.jar`.
+
+Verify:
+
+```bash
+systemctl is-active deploylatch-demo.service
+curl -fsS http://127.0.0.1:8080/health
+curl -fsS http://127.0.0.1:8080/version
+```
+
+Expected outputs: `active`, `OK`, and `v1`.
+
+## 5. Deploy a healthy release
+
+```bash
+sudo bash ~/deploylatch-staging/deploylatch.sh deploy ~/deploylatch-staging/demo-app-v2.jar v2
+```
+
+Expected:
+
+```text
+Deploying v2
+Deployment successful: v2
+```
+
+## 6. Demonstrate automatic rollback
+
+```bash
+sudo bash ~/deploylatch-staging/deploylatch.sh deploy ~/deploylatch-staging/demo-app-v3.jar v3
+```
+
+The command exits with a failure status **on purpose** because v3 is unhealthy. The tool should restore v2:
+
+```text
+Deploying v3
+Deployment failed: v3
+Restored v2
+```
+
+Check the running state and deployment log:
+
+```bash
+sudo bash ~/deploylatch-staging/deploylatch.sh status
+sudo bash ~/deploylatch-staging/deploylatch.sh history
+```
+
+Expected state:
+
+```text
+Current: v2
+Previous: v1
+Service: active
+Health: OK
+```
+
+## 7. Other commands and troubleshooting
+
+Manual rollback to the previous release:
+
+```bash
+sudo bash ~/deploylatch-staging/deploylatch.sh rollback
+```
+
+Inspect the service and its logs:
+
+```bash
+systemctl status deploylatch-demo.service --no-pager
+journalctl -u deploylatch-demo.service -n 40 --no-pager
+```
+
+Available CLI actions: `deploy`, `rollback`, `status`, `history`, and `help`.
+
+Each deployment requires a new release ID. Failed release directories remain under `/opt/deploylatch/releases/` for inspection; deploying another JAR with the same release ID will be refused.
+
+## Limits
+
+The script manages one application on one Ubuntu VM. It causes short service restarts, uses local HTTP checks rather than complete functional tests, and does not include remote orchestration, containers, or zero-downtime deployment. These commands are intended for the local course environment.
