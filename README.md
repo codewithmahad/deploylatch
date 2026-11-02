@@ -1,9 +1,9 @@
-<p align="center">
+<h1 align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="docs/assets/deploylatch-banner-mobile.b639b6fde7.svg">
-    <img src="docs/assets/deploylatch-banner.994662b08d.svg" alt="DeployLatch — Linux deployments, with a rollback plan." width="100%">
+    <img src="docs/assets/deploylatch-banner.994662b08d.svg" alt="DeployLatch" width="100%">
   </picture>
-</p>
+</h1>
 
 <p align="center">
   A Bash tool for deploying a Java service on Linux and recovering from failed updates.<br>
@@ -47,9 +47,9 @@ Health: OK
 
 </details>
 
-The v3 deployment command returns a non-zero exit status even after successful recovery: the requested update failed, while the old service was restored.
-
 <img src="docs/assets/linux-tux.png" alt="Tux, the Linux mascot" align="right" width="144">
+
+The v3 deployment command returns a non-zero exit status even after successful recovery: the requested update failed, while the old service was restored.
 
 ## Why I built this
 
@@ -112,9 +112,9 @@ Each deployment needs a unique release ID. Existing release directories, includi
 
 </details>
 
-The [operations guide](docs/OPERATIONS.md) contains the complete setup, file-transfer commands, manual rollback, and troubleshooting.
-
 <img src="docs/assets/java-sticker.svg" alt="Java" align="right" width="132">
+
+The [operations guide](docs/OPERATIONS.md) contains the complete setup, file-transfer commands, manual rollback, and troubleshooting.
 
 ## Inside the project
 
@@ -127,6 +127,8 @@ Bash owns the deployment and recovery steps. systemd owns the Java process. Keep
 <br clear="right">
 
 ## Project notes
+
+Use `deploy`, `rollback`, `status`, and `history` to manage releases and inspect results. Updates must pass health and version checks within eight attempts; a failed update returns a non-zero status even if recovery succeeds. The tool covers one local service with brief restart downtime, HTTP-level checks, and no guarantee of recovery after an interrupted deployment.
 
 <details>
 <summary><strong>Project structure and entry points</strong></summary>
