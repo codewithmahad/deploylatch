@@ -1,46 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="480" viewBox="0 0 1280 480" fill="none" role="img" aria-labelledby="title desc">
   <title id="title">DeployLatch</title>
-  <desc id="desc">Linux deployments, with a rollback plan. A custom mechanical latch sits between a forward release path and a return path.</desc>
-  <defs>
-    <pattern id="ticks" width="24" height="12" patternUnits="userSpaceOnUse">
-      <path d="M0 0V6" stroke="#626A7A" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1280" height="480" rx="16" fill="#24272E"/>
-  <path d="M0 464H1280V480H0Z" fill="#7298FF"/>
+  <desc id="desc">Linux deployments, with a rollback plan. The creator's lock-and-server emblem uses circular arrows to represent deployment and recovery.</desc>
+<rect width="1280" height="480" rx="16" fill="#1D232A"/>
+  <path d="M0 464H1280V480H0Z" fill="#1F6FEB"/>
   <g font-family="'Segoe UI', Arial, sans-serif">
-    <text x="58" y="61" fill="#C4C9D4" font-size="13" font-weight="600" letter-spacing="3">OPERATING SYSTEMS / LINUX</text>
-    <path d="M58 88H1222" stroke="#454B57"/>
-    <text x="54" y="194" fill="#F5F6F8" font-size="86" font-weight="700" letter-spacing="-4">DeployLatch<tspan fill="#7298FF">.</tspan></text>
+    <text x="58" y="61" fill="#C7D0DA" font-size="13" font-weight="600" letter-spacing="3">OPERATING SYSTEMS / LINUX</text>
+    <path d="M58 88H1222" stroke="#424C59"/>
+    <text x="54" y="194" fill="#F5F6F8" font-size="86" font-weight="700" letter-spacing="-4">Deploy<tspan fill="#1F6FEB">Latch</tspan></text>
     <text x="59" y="259" fill="#F5F6F8" font-size="32" font-weight="400" letter-spacing="-.6">Linux deployments,</text>
     <text x="59" y="301" fill="#F5F6F8" font-size="32" font-weight="400" letter-spacing="-.6">with a rollback plan.</text>
-    <path d="M58 367H665" stroke="#454B57"/>
-    <text x="59" y="403" fill="#C4C9D4" font-size="14" font-weight="600" letter-spacing="2">BASH</text>
-    <circle cx="126" cy="398" r="2" fill="#7298FF"/>
-    <text x="149" y="403" fill="#C4C9D4" font-size="14" font-weight="600" letter-spacing="2">JAVA</text>
-    <circle cx="215" cy="398" r="2" fill="#7298FF"/>
-    <text x="238" y="403" fill="#C4C9D4" font-size="14" font-weight="600" letter-spacing="2">UBUNTU</text>
-    <text x="665" y="403" fill="#C4C9D4" font-size="12" text-anchor="end" letter-spacing="1.5">A COURSE PROJECT</text>
+    <path d="M58 367H665" stroke="#424C59"/>
+    <text x="59" y="403" fill="#C7D0DA" font-size="14" font-weight="600" letter-spacing="2">BASH</text>
+    <circle cx="126" cy="398" r="2" fill="#1F6FEB"/>
+    <text x="149" y="403" fill="#C7D0DA" font-size="14" font-weight="600" letter-spacing="2">JAVA</text>
+    <circle cx="215" cy="398" r="2" fill="#1F6FEB"/>
+    <text x="238" y="403" fill="#C7D0DA" font-size="14" font-weight="600" letter-spacing="2">UBUNTU</text>
+    <text x="665" y="403" fill="#C7D0DA" font-size="12" text-anchor="end" letter-spacing="1.5">A COURSE PROJECT</text>
   </g>
-  <path d="M740 127V408" stroke="#454B57"/>
-  <rect x="788" y="127" width="434" height="12" fill="url(#ticks)"/>
-  <g stroke-linecap="round" stroke-linejoin="round">
-    <path d="M798 250H902" stroke="#C4C9D4" stroke-width="2"/>
-    <path d="M889 243L902 250L889 257" stroke="#C4C9D4" stroke-width="2"/>
-    <path d="M1100 250H1207" stroke="#C4C9D4" stroke-width="2"/>
-    <path d="M1194 243L1207 250L1194 257" stroke="#C4C9D4" stroke-width="2"/>
-    <rect x="920" y="164" width="170" height="172" rx="22" fill="#303540" stroke="#606A7D"/>
-    <path d="M997 195H957V305H989M1020 195H1053V305H1015" stroke="#F5F6F8" stroke-width="12"/>
-    <path d="M979 250H1034" stroke="#7298FF" stroke-width="15"/>
-    <circle cx="1034" cy="250" r="13" fill="#7298FF"/>
-    <circle cx="1034" cy="250" r="4" fill="#24272E"/>
-    <path d="M1162 277V340C1162 366 1147 381 1121 381H885C862 381 850 368 850 346V305" stroke="#7298FF" stroke-width="2"/>
-    <path d="M842 317L850 304L858 317" stroke="#7298FF" stroke-width="2"/>
+  <path d="M740 127V408" stroke="#424C59"/>
+  <g transform="translate(864 112) scale(.46) translate(-310 -190)">
+    <defs>
+    <mask id="release-servers" maskUnits="userSpaceOnUse" x="400" y="390" width="450" height="400">
+      <rect x="400" y="390" width="450" height="400" fill="white"/>
+      <rect x="506" y="554" width="235" height="50" rx="15" fill="black"/>
+      <rect x="506" y="620" width="235" height="50" rx="15" fill="black"/>
+      <rect x="506" y="686" width="235" height="50" rx="15" fill="black"/>
+    </mask>
+  </defs>
+  <path fill="#F5F6F8" d="M486 443V344C486 269 548 208 625 208C702 208 764 269 764 344V443L705 399V344C705 299 669 262 625 262C581 262 544 299 544 344V399Z"/>
+  <path fill="#F5F6F8" mask="url(#release-servers)" d="M428 669V545C428 501 460 467 504 466C530 423 572 397 625 397C678 397 720 424 746 466C790 469 824 502 824 546V686C824 737 783 777 732 777H520C483 777 453 751 439 708L465 693Z"/>
+  <g fill="#F5F6F8">
+    <circle cx="709" cy="579" r="10.5"/><circle cx="709" cy="645" r="10.5"/><circle cx="709" cy="711" r="10.5"/>
   </g>
-  <g font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" letter-spacing="2">
-    <text x="799" y="228" fill="#C4C9D4">RELEASE</text>
-    <text x="1140" y="228" fill="#C4C9D4">CHECK</text>
-    <rect x="956" y="370" width="99" height="21" fill="#24272E"/>
-    <text x="1005" y="385" fill="#7298FF" text-anchor="middle">RESTORE</text>
+  <g fill="#1F6FEB">
+    <path d="M625 428C626 427 627 427 628 429L697 512Q700 516 695 516H658V581Q658 589 650 589H601Q593 589 593 581V516H557Q551 516 555 511L622 430Q624 428 625 428Z"/>
+    <path d="M462 366V405C397 444 357 520 361 608L332 622C318 518 366 412 462 366Z"/>
+    <path d="M786 366V405C816 426 840 453 855 486L822 502L905 560L929 454L891 472C866 426 831 389 786 366Z"/>
+    <path d="M889 584H919C919 746 787 875 625 875C517 875 418 823 371 739L335 742L356 636L443 693L409 712C457 787 537 836 625 836C770 836 889 727 889 584Z"/>
+  </g>
   </g>
 </svg>

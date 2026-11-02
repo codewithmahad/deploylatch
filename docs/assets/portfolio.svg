@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="118" height="42" viewBox="0 0 118 42" role="img" aria-labelledby="title">
 <title id="title">Portfolio</title>
 <rect x=".5" y=".5" width="117" height="41" rx="8" fill="#F5F6F8" stroke="#D4DAE5"/>
-<g stroke="#536079" stroke-width="1.5" fill="none"><rect x="13" y="12" width="19" height="18" rx="3"/><path d="M13 18H32M17 15H18M21 15H22M21 22L18 25L21 28M25 22L28 25L25 28"/></g>
+<g stroke="#4F6075" stroke-width="1.5" fill="none"><rect x="13" y="12" width="19" height="18" rx="3"/><path d="M13 18H32M17 15H18M21 15H22M21 22L18 25L21 28M25 22L28 25L25 28"/></g>
 <text x="42" y="26" fill="#353C49" font-family="'Segoe UI',Arial,sans-serif" font-size="14" font-weight="600">Portfolio</text>
 </svg>

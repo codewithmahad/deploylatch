@@ -44,6 +44,16 @@ The script accepts an update only when `/health` returns `OK` and `/version` mat
 
 The course demonstration ran on **Ubuntu 26.04.1 LTS in VMware**. Starting from v1, v2 deploys successfully. v3 deliberately returns HTTP 503, triggering a rollback to v2.
 
+<p align="center">
+  <a href="docs/assets/deployment-demo.png">
+    <img src="docs/assets/deployment-demo.png" alt="Ubuntu terminal showing successful v2 deployment, failed v3 deployment, recovery to v2, active service with healthy status, and SUCCESS and ROLLED_BACK history records." width="100%">
+  </a>
+  <br><sub>Click the screenshot to inspect the commands and deployment history at full size.</sub>
+</p>
+
+<details>
+<summary><strong>Text version of the demonstration</strong></summary>
+
 ```text
 Deploying v2
 Deployment successful: v2
@@ -57,6 +67,8 @@ Previous: v1
 Service: active
 Health: OK
 ```
+
+</details>
 
 The v3 deployment command returns a non-zero exit status even after successful recovery: the requested update failed, while the old service was restored.
 
@@ -108,7 +120,7 @@ The [operations guide](docs/OPERATIONS.md) contains the complete setup, file-tra
 
 The Java app uses the JDK's built-in HTTP server. A `release.properties` file packaged into each JAR supplies its version and health behavior, so the same source produces all three demo releases.
 
-It listens on `127.0.0.1:8080`. `GET /health` returns HTTP 200 with `OK` for v1/v2, or HTTP 503 with `UNHEALTHY` for v3. `GET /version` returns the release ID. Requests must come from inside the VM. Unknown paths return `404`; other methods on these endpoints return `405`.
+It binds to the VM's loopback address, `127.0.0.1:8080`. `GET /health` returns HTTP 200 with `OK` for v1/v2, or HTTP 503 with `UNHEALTHY` for v3. `GET /version` returns the release ID. Unknown paths return `404`; other methods on these endpoints return `405`.
 
 Bash owns the deployment and recovery steps. systemd owns the Java process. Keeping the application small leaves the OS behavior easy to follow.
 
@@ -174,12 +186,14 @@ journalctl -u deploylatch-demo.service -n 40 --no-pager
 
 Verification makes up to **8 attempts**, with a **2-second timeout per HTTP request** and a **1-second pause after each unsuccessful attempt**. Both the health body and expected version must match. These are fixed values in the script.
 
+The terminal demonstration shows a healthy update and automatic rollback. The table below describes the script's handling of these and other failure cases.
+
 | Situation | Script behavior |
 | :--- | :--- |
 | Unreadable JAR, invalid ID, or existing release ID | Refuse the deployment before switching the active release |
 | Another command holds the deployment lock | Exit instead of running concurrently |
 | New service fails to start or pass verification | Restore the old release and verify it |
-| No valid old release exists | Stop the service, remove `current`, and record `FAILED` |
+| The new deployment fails and no valid old release exists | Stop the service, remove `current`, and record `FAILED` |
 | Automatic recovery also fails | Record `ROLLBACK_FAILED` and report failure |
 | Manual rollback target fails | Restore the original active link, attempt a restart, and report failure |
 

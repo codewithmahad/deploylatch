@@ -5,26 +5,26 @@
   <g font-family="'Segoe UI', Arial, sans-serif">
     <text x="38" y="39" fill="#626B7A" font-size="12" font-weight="600" letter-spacing="2">DEPLOYMENT / RECOVERY FLOW</text>
     <path d="M38 58H1242" stroke="#D5DAE4"/>
-    <text x="38" y="99" fill="#527AE0" font-size="12" font-weight="600" letter-spacing="1.5">01</text>
-    <text x="334" y="99" fill="#527AE0" font-size="12" font-weight="600" letter-spacing="1.5">02</text>
-    <text x="648" y="99" fill="#527AE0" font-size="12" font-weight="600" letter-spacing="1.5">03</text>
-    <text x="38" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Save the release</text>
-    <text x="334" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Start the update</text>
-    <text x="648" y="139" fill="#24272E" font-size="24" font-weight="600" letter-spacing="-.4">Check health</text>
+    <text x="38" y="99" fill="#154A8F" font-size="12" font-weight="600" letter-spacing="1.5">01</text>
+    <text x="334" y="99" fill="#154A8F" font-size="12" font-weight="600" letter-spacing="1.5">02</text>
+    <text x="648" y="99" fill="#154A8F" font-size="12" font-weight="600" letter-spacing="1.5">03</text>
+    <text x="38" y="139" fill="#1D232A" font-size="24" font-weight="600" letter-spacing="-.4">Save the release</text>
+    <text x="334" y="139" fill="#1D232A" font-size="24" font-weight="600" letter-spacing="-.4">Start the update</text>
+    <text x="648" y="139" fill="#1D232A" font-size="24" font-weight="600" letter-spacing="-.4">Check health</text>
     <text x="38" y="170" fill="#626B7A" font-size="16">Store a versioned JAR.</text>
     <text x="334" y="170" fill="#626B7A" font-size="16">Restart the Java service.</text>
     <text x="648" y="170" fill="#626B7A" font-size="16">Check health and release ID.</text>
-    <rect x="1010" y="99" width="232" height="57" rx="8" fill="#E4EBFF"/>
-    <text x="1028" y="122" fill="#365DAE" font-size="11" font-weight="700" letter-spacing="1">PASS</text>
-    <text x="1028" y="143" fill="#24272E" font-size="17" font-weight="600">Keep the update</text>
-    <text x="968" y="210" fill="#527AE0" font-size="12" font-weight="700" letter-spacing="1">FAIL</text>
-    <text x="38" y="255" fill="#24272E" font-size="19" font-weight="600">Restore the old release</text>
+    <rect x="1010" y="99" width="232" height="57" rx="8" fill="#E7EFF9"/>
+    <text x="1028" y="122" fill="#103F7A" font-size="11" font-weight="700" letter-spacing="1">PASS</text>
+    <text x="1028" y="143" fill="#1D232A" font-size="17" font-weight="600">Keep the update</text>
+    <text x="968" y="210" fill="#154A8F" font-size="12" font-weight="700" letter-spacing="1">FAIL</text>
+    <text x="38" y="255" fill="#1D232A" font-size="19" font-weight="600">Restore the old release</text>
     <text x="38" y="283" fill="#626B7A" font-size="15">Restart it, then check recovery.</text>
   </g>
   <g stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
     <path d="M268 130H309M302 124L309 130L302 136M570 130H622M615 124L622 130L615 136" stroke="#8D97A8"/>
     <path d="M895 130H988M980 124L988 130L980 136" stroke="#8D97A8"/>
-    <path d="M950 130V249H372M382 242L371 249L382 256" stroke="#527AE0"/>
+    <path d="M950 130V249H372M382 242L371 249L382 256" stroke="#154A8F"/>
     <circle cx="950" cy="130" r="4" fill="#F5F6F8" stroke="#8D97A8"/>
   </g>
 </svg>

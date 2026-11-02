@@ -1,28 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="540" viewBox="0 0 640 540" fill="none" role="img" aria-labelledby="title desc">
   <title id="title">DeployLatch</title>
   <desc id="desc">Linux deployments, with a rollback plan. Bash, Java, Ubuntu. An Operating Systems course project.</desc>
-  <rect width="640" height="540" rx="16" fill="#24272E"/>
-  <path d="M0 524H640V540H0Z" fill="#7298FF"/>
+  <rect width="640" height="540" rx="16" fill="#1D232A"/>
+  <path d="M0 524H640V540H0Z" fill="#1F6FEB"/>
   <g font-family="'Segoe UI', Arial, sans-serif">
-    <text x="36" y="52" fill="#C4C9D4" font-size="16" font-weight="600" letter-spacing="2">OPERATING SYSTEMS / LINUX</text>
-    <path d="M36 76H604" stroke="#454B57"/>
-    <text x="32" y="164" fill="#F5F6F8" font-size="74" font-weight="700" letter-spacing="-3">DeployLatch<tspan fill="#7298FF">.</tspan></text>
+    <text x="36" y="52" fill="#C7D0DA" font-size="16" font-weight="600" letter-spacing="2">OPERATING SYSTEMS / LINUX</text>
+    <path d="M36 76H604" stroke="#424C59"/>
+    <text x="32" y="164" fill="#F5F6F8" font-size="74" font-weight="700" letter-spacing="-3">Deploy<tspan fill="#1F6FEB">Latch</tspan></text>
     <text x="36" y="222" fill="#F5F6F8" font-size="32" letter-spacing="-.6">Linux deployments,</text>
     <text x="36" y="265" fill="#F5F6F8" font-size="32" letter-spacing="-.6">with a rollback plan.</text>
-    <text x="36" y="465" fill="#C4C9D4" font-size="18" font-weight="600" letter-spacing="2">BASH</text>
-    <circle cx="119" cy="459" r="2.5" fill="#7298FF"/>
-    <text x="142" y="465" fill="#C4C9D4" font-size="18" font-weight="600" letter-spacing="2">JAVA</text>
-    <circle cx="222" cy="459" r="2.5" fill="#7298FF"/>
-    <text x="245" y="465" fill="#C4C9D4" font-size="18" font-weight="600" letter-spacing="2">UBUNTU</text>
+    <text x="36" y="465" fill="#C7D0DA" font-size="18" font-weight="600" letter-spacing="2">BASH</text>
+    <circle cx="119" cy="459" r="2.5" fill="#1F6FEB"/>
+    <text x="142" y="465" fill="#C7D0DA" font-size="18" font-weight="600" letter-spacing="2">JAVA</text>
+    <circle cx="222" cy="459" r="2.5" fill="#1F6FEB"/>
+    <text x="245" y="465" fill="#C7D0DA" font-size="18" font-weight="600" letter-spacing="2">UBUNTU</text>
   </g>
-  <g stroke-linecap="round" stroke-linejoin="round">
-    <path d="M36 352H103M91 345L103 352L91 359M221 352H290M278 345L290 352L278 359" stroke="#C4C9D4" stroke-width="2"/>
-    <rect x="120" y="305" width="84" height="94" rx="12" fill="#303540" stroke="#606A7D"/>
-    <path d="M157 322H139V382H153M175 322H186V382H170" stroke="#F5F6F8" stroke-width="6"/>
-    <path d="M150 352H177" stroke="#7298FF" stroke-width="8"/>
-    <circle cx="177" cy="352" r="7" fill="#7298FF"/>
-    <circle cx="177" cy="352" r="2" fill="#24272E"/>
-    <path d="M335 352H563C584 352 590 364 590 380C590 396 580 408 563 408H247" stroke="#7298FF" stroke-width="2"/>
-    <path d="M258 401L246 408L258 415" stroke="#7298FF" stroke-width="2"/>
+  <g transform="translate(405 305) scale(.27) translate(-310 -190)">
+    <defs>
+    <mask id="release-servers" maskUnits="userSpaceOnUse" x="400" y="390" width="450" height="400">
+      <rect x="400" y="390" width="450" height="400" fill="white"/>
+      <rect x="506" y="554" width="235" height="50" rx="15" fill="black"/>
+      <rect x="506" y="620" width="235" height="50" rx="15" fill="black"/>
+      <rect x="506" y="686" width="235" height="50" rx="15" fill="black"/>
+    </mask>
+  </defs>
+  <path fill="#F5F6F8" d="M486 443V344C486 269 548 208 625 208C702 208 764 269 764 344V443L705 399V344C705 299 669 262 625 262C581 262 544 299 544 344V399Z"/>
+  <path fill="#F5F6F8" mask="url(#release-servers)" d="M428 669V545C428 501 460 467 504 466C530 423 572 397 625 397C678 397 720 424 746 466C790 469 824 502 824 546V686C824 737 783 777 732 777H520C483 777 453 751 439 708L465 693Z"/>
+  <g fill="#F5F6F8">
+    <circle cx="709" cy="579" r="10.5"/><circle cx="709" cy="645" r="10.5"/><circle cx="709" cy="711" r="10.5"/>
+  </g>
+  <g fill="#1F6FEB">
+    <path d="M625 428C626 427 627 427 628 429L697 512Q700 516 695 516H658V581Q658 589 650 589H601Q593 589 593 581V516H557Q551 516 555 511L622 430Q624 428 625 428Z"/>
+    <path d="M462 366V405C397 444 357 520 361 608L332 622C318 518 366 412 462 366Z"/>
+    <path d="M786 366V405C816 426 840 453 855 486L822 502L905 560L929 454L891 472C866 426 831 389 786 366Z"/>
+    <path d="M889 584H919C919 746 787 875 625 875C517 875 418 823 371 739L335 742L356 636L443 693L409 712C457 787 537 836 625 836C770 836 889 727 889 584Z"/>
+  </g>
   </g>
 </svg>

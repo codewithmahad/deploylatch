@@ -1,4 +1,10 @@
-# Third-party artwork
+# Artwork and source notes
+
+## Project logo and demonstration
+
+`deploylatch-logo-original.png` is the creator-supplied DeployLatch logo, preserved unchanged. `deploylatch-mark.svg` and `deploylatch-mark-on-dark.svg` are vector adaptations of its lock, server, upload arrow, and circular recovery arrows. They use the README's cobalt-blue palette, with dark or silver foregrounds. Both banners incorporate the same adapted symbol and two-tone project name.
+
+`deployment-demo.png` is the creator's original Ubuntu terminal screenshot, copied unchanged. It shows the successful v2 update, failed v3 deployment, recovery to v2, service status, and deployment history.
 
 ## Technology vectors
 
