@@ -57,8 +57,6 @@ I built DeployLatch for my Operating Systems course to use the Linux and Bash sk
 
 The result is a small deployment tool for **one Java service on one Ubuntu VM**. It brings together shell scripting, Linux services, permissions, HTTP checks, and release management.
 
-<br clear="right">
-
 ## How it works
 
 Each JAR gets its own release directory. A `current` symbolic link selects the running release; `previous` identifies the manual rollback target. systemd runs the application under a dedicated, non-root account.
@@ -123,8 +121,6 @@ The Java app uses the JDK's built-in HTTP server. A `release.properties` file pa
 It binds to the VM's loopback address, `127.0.0.1:8080`. `GET /health` returns HTTP 200 with `OK` for v1/v2, or HTTP 503 with `UNHEALTHY` for v3. `GET /version` returns the release ID. Unknown paths return `404`; other methods on these endpoints return `405`.
 
 Bash owns the deployment and recovery steps. systemd owns the Java process. Keeping the application small leaves the OS behavior easy to follow.
-
-<br clear="right">
 
 ## Project notes
 
@@ -244,8 +240,6 @@ Department of Computer Science, UBIT, University of Karachi.</p>
 Built for my fourth-semester Operating Systems course in **2026**. I handled the implementation, integration, and Ubuntu demonstration.
 
 The project gave the lab concepts a practical purpose: file permissions protect the releases, symlinks select the active version, exit codes report failures, locking prevents overlapping commands, and systemd manages the process. The Java work connects HTTP responses and JAR packaging to those Linux operations.
-
-<br clear="right">
 
 </details>
 
