@@ -6,6 +6,8 @@
 
 `deployment-demo.png` is the creator's original Ubuntu terminal screenshot, copied unchanged. It shows the successful v2 update, failed v3 deployment, recovery to v2, service status, and deployment history.
 
+README graphics use content-versioned filenames so an updated graphic receives a new image URL.
+
 ## Technology vectors
 
 The technology icons in `tech/` are copied from [Devicon](https://github.com/devicons/devicon), distributed under the MIT License. Copyright (c) 2015 konpa. The full notice is preserved in [`tech/DEVICON-LICENSE.txt`](tech/DEVICON-LICENSE.txt).
@@ -17,7 +19,7 @@ The technology icons in `tech/` are copied from [Devicon](https://github.com/dev
 | `tech/bash-original.svg` | [Bash](https://github.com/devicons/devicon/blob/master/icons/bash/bash-original.svg) |
 | `tech/github-original.svg` | [GitHub](https://github.com/devicons/devicon/blob/master/icons/github/github-original.svg) |
 
-`java-sticker.svg` is an unmodified copy of the Java vector. `follow-github.svg` embeds the GitHub vector with its fill changed to white. The other social button graphics are drawn for this README. The logos and trademarks belong to their respective owners; their use identifies the technologies used by this project.
+`java-sticker.svg` is an unmodified copy of the Java vector. `follow-github.03d5099ae6.svg` embeds the GitHub vector with its fill changed to white. The other social button graphics are drawn for this README. The logos and trademarks belong to their respective owners; their use identifies the technologies used by this project.
 
 ## Tux
 

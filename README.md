@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(max-width: 600px)" srcset="docs/assets/deploylatch-banner-mobile.svg">
-    <img src="docs/assets/deploylatch-banner.svg" alt="DeployLatch — Linux deployments, with a rollback plan." width="100%">
+    <source media="(max-width: 600px)" srcset="docs/assets/deploylatch-banner-mobile.b639b6fde7.svg">
+    <img src="docs/assets/deploylatch-banner.994662b08d.svg" alt="DeployLatch — Linux deployments, with a rollback plan." width="100%">
   </picture>
 </p>
 
@@ -11,36 +11,13 @@
 </p>
 
 <p align="center">
+  <a href="#deployment-demo">Demo</a> &nbsp;·&nbsp;
   <a href="#how-it-works">Workflow</a> &nbsp;·&nbsp;
-  <a href="#the-demonstration">Demo</a> &nbsp;·&nbsp;
   <a href="#run-it">Run it</a> &nbsp;·&nbsp;
   <a href="#project-notes">Project notes</a>
 </p>
 
-<img src="docs/assets/linux-tux.png" alt="Tux, the Linux mascot" align="right" width="144">
-
-## Why I built this
-
-I built DeployLatch for my Operating Systems course to use the Linux and Bash skills from the lab alongside Java backend development. I wanted to work through how an application starts as a service, how an update is checked, and how to recover when something goes wrong.
-
-The result is a small deployment tool for **one Java service on one Ubuntu VM**. It brings together shell scripting, Linux services, permissions, HTTP checks, and release management.
-
-<br clear="right">
-
-## How it works
-
-Each JAR gets its own release directory. A `current` symbolic link selects the running release; `previous` identifies the manual rollback target. systemd runs the application under a dedicated, non-root account.
-
-<p align="center">
-  <picture>
-    <source media="(max-width: 600px)" srcset="docs/assets/deployment-flow-mobile.svg">
-    <img src="docs/assets/deployment-flow.svg" alt="Install a versioned JAR, switch the active release, restart the service, and check health and release ID. Restore and verify the old release if deployment fails." width="100%">
-  </picture>
-</p>
-
-The script accepts an update only when `/health` returns `OK` and `/version` matches the requested release ID. If startup or verification fails, it switches back to the old release, restarts it, and checks recovery. A file lock prevents concurrent deployments; outcomes are recorded with UTC timestamps.
-
-## The demonstration
+## Deployment demo
 
 The course demonstration ran on **Ubuntu 26.04.1 LTS in VMware**. Starting from v1, v2 deploys successfully. v3 deliberately returns HTTP 503, triggering a rollback to v2.
 
@@ -71,6 +48,29 @@ Health: OK
 </details>
 
 The v3 deployment command returns a non-zero exit status even after successful recovery: the requested update failed, while the old service was restored.
+
+<img src="docs/assets/linux-tux.png" alt="Tux, the Linux mascot" align="right" width="144">
+
+## Why I built this
+
+I built DeployLatch for my Operating Systems course to use the Linux and Bash skills from the lab alongside Java backend development. I wanted to work through how an application starts as a service, how an update is checked, and how to recover when something goes wrong.
+
+The result is a small deployment tool for **one Java service on one Ubuntu VM**. It brings together shell scripting, Linux services, permissions, HTTP checks, and release management.
+
+<br clear="right">
+
+## How it works
+
+Each JAR gets its own release directory. A `current` symbolic link selects the running release; `previous` identifies the manual rollback target. systemd runs the application under a dedicated, non-root account.
+
+<p align="center">
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/assets/deployment-flow-mobile.2647958d74.svg">
+    <img src="docs/assets/deployment-flow.a62847d269.svg" alt="Install a versioned JAR, switch the active release, restart the service, and check health and release ID. Restore and verify the old release if deployment fails." width="100%">
+  </picture>
+</p>
+
+The script accepts an update only when `/health` returns `OK` and `/version` matches the requested release ID. If startup or verification fails, it switches back to the old release, restarts it, and checks recovery. A file lock prevents concurrent deployments; outcomes are recorded with UTC timestamps.
 
 ## Run it
 
@@ -252,8 +252,8 @@ The project gave the lab concepts a practical purpose: file permissions protect 
 I'm **Shaikh Mahad Ud Din**, [@codewithmahad](https://github.com/codewithmahad). I build Java backend projects and share what I learn. Working with Java or Linux, or have a project you'd like to build together? I'd be glad to connect.
 
 <p>
-  <a href="https://github.com/codewithmahad"><img src="docs/assets/follow-github.svg" alt="Follow on GitHub" height="38"></a>
-  <a href="https://www.linkedin.com/in/codewithmahad/"><img src="docs/assets/linkedin.svg" alt="Connect on LinkedIn" height="38"></a>
-  <a href="https://shaikhmahad.vercel.app/"><img src="docs/assets/portfolio.svg" alt="Visit my portfolio" height="38"></a>
-  <a href="mailto:codewithmahad@gmail.com"><img src="docs/assets/email.svg" alt="Send me an email" height="38"></a>
+  <a href="https://github.com/codewithmahad"><img src="docs/assets/follow-github.03d5099ae6.svg" alt="Follow on GitHub" height="38"></a>
+  <a href="https://www.linkedin.com/in/codewithmahad/"><img src="docs/assets/linkedin.a941d885b2.svg" alt="Connect on LinkedIn" height="38"></a>
+  <a href="https://shaikhmahad.vercel.app/"><img src="docs/assets/portfolio.573b265817.svg" alt="Visit my portfolio" height="38"></a>
+  <a href="mailto:codewithmahad@gmail.com"><img src="docs/assets/email.35d1b709e8.svg" alt="Send me an email" height="38"></a>
 </p>
