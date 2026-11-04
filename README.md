@@ -21,16 +21,16 @@ I built DeployLatch for my Operating Systems course at UBIT to practise Linux an
 
 I tested a working update and automatic recovery on an **Ubuntu VM in VMware**. The three JARs come from one small Java application; v3 deliberately returns HTTP 503 so the recovery path can be demonstrated.
 
-| Step | Result |
-| :--- | :--- |
-| Start with v1 | Service running; health is `OK` |
-| Deploy v2 | Update accepted; v1 kept as the rollback target |
-| Attempt v3 | Update rejected; v2 restored and verified |
+1. **Start with v1.** The service is running and `/health` returns `OK`.
+2. **Deploy v2.** The update passes; v1 becomes the manual rollback target.
+3. **Attempt v3.** The update fails; v2 is restored and verified.
+
+**[View the terminal demonstration](docs/assets/deployment-demo.png)**
 
 The failed v3 command still returns a non-zero exit status: the requested update failed, even though recovery succeeded.
 
 <details>
-<summary><strong>View the Ubuntu terminal demonstration</strong></summary>
+<summary><strong>Screenshot and final service status</strong></summary>
 
 <a href="docs/assets/deployment-demo.png"><img src="docs/assets/deployment-demo.png" width="100%" alt="Ubuntu terminal showing successful v2 deployment, failed v3 update, recovery to v2, healthy service status, and SUCCESS and ROLLED_BACK history records."></a>
 
@@ -43,7 +43,7 @@ Service: active
 Health: OK
 ```
 
-The screenshot shows the saved demonstration. Click it to inspect the commands and history at full size.
+Saved Ubuntu run; click the image to inspect the commands and history at full size.
 
 </details>
 
@@ -100,24 +100,21 @@ Every deployment needs a unique release ID that matches the version packaged in 
 
 Start with the Bash controller and follow its calls into the service and HTTP checks.
 
-| Start here | What it covers |
-| :--- | :--- |
-| [Bash controller](scripts/deploylatch.sh) | Command handling, release links, verification, recovery, and history |
-| [Service unit](systemd/deploylatch-demo.service) | Java startup, service account, and restart behavior |
-| [Java application](demo-app/src/main/java/dev/deploylatch/demo/DemoServer.java) | Local `/health` and `/version` endpoints |
-| [Build helper](scripts/build-demo.ps1) | Compile once and package three test releases |
+- **[Bash controller](scripts/deploylatch.sh)** &mdash; command handling, release links, verification, recovery, and history.
+- **[Service unit](systemd/deploylatch-demo.service)** &mdash; Java startup, service account, and restart behavior.
+- **[Java application](demo-app/src/main/java/dev/deploylatch/demo/DemoServer.java)** &mdash; local `/health` and `/version` endpoints.
+- **[Build helper](scripts/build-demo.ps1)** &mdash; compile once and package three test releases.
 
 <details>
 <summary><strong>Commands, paths, and failure behavior</strong></summary>
 
 The operational commands require sudo and take the same exclusive lock. `help` prints usage without either.
 
-| Command | Result |
-| :--- | :--- |
-| `deploy JAR RELEASE_ID` | Install and verify an update; recover on failure |
-| `rollback` | Select and verify `previous`; swap the targets on success |
-| `status` | Show selected releases, service state, and HTTP health |
-| `history` | Print the latest 20 deployment records |
+- **`deploy JAR RELEASE_ID`** &mdash; install and verify an update; recover on failure.
+- **`rollback`** &mdash; select and verify `previous`; swap the targets on success.
+- **`status`** &mdash; show selected releases, service state, and HTTP health.
+- **`history`** &mdash; print the latest 20 deployment records.
+- **`help`** &mdash; display command usage; no sudo required.
 
 Releases live at `/opt/deploylatch/releases/<id>/app.jar`. The `current`, `previous`, and `.deploy.lock` entries sit under `/opt/deploylatch/`. Outcomes are appended to `/var/log/deploylatch/deployments.log`. For Java startup errors, use `journalctl -u deploylatch-demo.service -n 40 --no-pager`.
 
