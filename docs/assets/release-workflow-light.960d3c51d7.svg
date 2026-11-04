@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="156" viewBox="0 0 980 156" role="img" aria-labelledby="title desc">
+<title id="title">Deploy, restart and verify</title>
+<desc id="desc">Store the new JAR in its own release directory, switch current and restart the service, then check health and version. A failed update triggers restoration and verification of the old release.</desc>
+<g font-family="'Segoe UI', Arial, sans-serif" fill="#1F2328">
+<text x="8" y="20" font-size="12" font-weight="600" fill="#1F6FEB" letter-spacing="1.5">01</text>
+<text x="8" y="54" font-size="25" font-weight="600">Install the release</text>
+<text x="8" y="82" font-size="17" fill="#57606A">Store the JAR in its own directory.</text>
+<text x="340" y="20" font-size="12" font-weight="600" fill="#1F6FEB" letter-spacing="1.5">02</text>
+<text x="340" y="54" font-size="25" font-weight="600">Restart the service</text>
+<text x="340" y="82" font-size="17" fill="#57606A">Switch current to the new release.</text>
+<text x="675" y="20" font-size="12" font-weight="600" fill="#1F6FEB" letter-spacing="1.5">03</text>
+<text x="675" y="54" font-size="25" font-weight="600">Verify the update</text>
+<text x="675" y="82" font-size="17" fill="#57606A">Check health and release identity.</text>
+<path d="M280 49H315M307 43L315 49L307 55M615 49H650M642 43L650 49L642 55" fill="none" stroke="#57606A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 104H972" stroke="#D0D7DE"/>
+<text x="8" y="136" font-size="17" fill="#1F6FEB" font-weight="600">If verification fails: restore the old release, restart it and check recovery.</text>
+</g></svg>

@@ -8,6 +8,8 @@
 
 README graphics use content-versioned filenames so an updated graphic receives a new image URL.
 
+`deploylatch-title-light.*.svg` and `deploylatch-title-dark.*.svg` are text-only wordmarks drawn for this README. The opening pairs them with the existing emblem instead of a full-width banner. The `release-workflow-*.svg` diagrams describe installation, service restart, verification, and recovery, with separate light/dark and compact layouts. These title and workflow graphics are project-authored vectors.
+
 ## Technology vectors
 
 The technology icons in `tech/` are copied from [Devicon](https://github.com/devicons/devicon), distributed under the MIT License. Copyright (c) 2015 konpa. The full notice is preserved in [`tech/DEVICON-LICENSE.txt`](tech/DEVICON-LICENSE.txt).

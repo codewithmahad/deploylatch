@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="246" viewBox="0 0 480 246" role="img" aria-labelledby="title desc">
+<title id="title">Deploy, restart and verify</title>
+<desc id="desc">Store the new JAR in its own release directory, switch current and restart the service, then check health and version. A failed update triggers restoration and verification of the old release.</desc>
+<g font-family="'Segoe UI', Arial, sans-serif" fill="#E6EDF3">
+<text x="8" y="27" fill="#58A6FF" font-size="16" font-weight="600">01</text>
+<text x="49" y="27" font-size="23" font-weight="600">Install</text>
+<text x="49" y="51" font-size="18" fill="#9DA7B3">Keep each release in its own directory.</text>
+<text x="8" y="86" fill="#58A6FF" font-size="16" font-weight="600">02</text>
+<text x="49" y="86" font-size="23" font-weight="600">Restart</text>
+<text x="49" y="110" font-size="18" fill="#9DA7B3">Switch current; restart the service.</text>
+<text x="8" y="145" fill="#58A6FF" font-size="16" font-weight="600">03</text>
+<text x="49" y="145" font-size="23" font-weight="600">Verify</text>
+<text x="49" y="169" font-size="18" fill="#9DA7B3">Require OK and the matching version.</text>
+<path d="M8 192H472" stroke="#30363D"/>
+<text x="8" y="219" font-size="17" fill="#58A6FF" font-weight="600">Failed update? Restore, restart, verify recovery.</text>
+</g></svg>
