@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+# Deploy and manage versioned releases of the DeployLatch demo service.
 # Stop on unhandled command errors, unset variables, and failed pipelines.
 set -Eeuo pipefail
 
-# Shared paths used by deployment, rollback, status, and history.
+# Shared paths used by deployment, rollback, status, and history commands.
 ROOT=/opt/deploylatch
 RELEASES="$ROOT/releases"
 CURRENT="$ROOT/current"
@@ -10,12 +11,13 @@ PREVIOUS="$ROOT/previous"
 SERVICE=deploylatch-demo.service
 LOG=/var/log/deploylatch/deployments.log
 
+# Print a consistent, user-facing error and stop the command.
 print_error_and_exit() {
     printf 'Error: %s\n' "$*" >&2
     exit 1
 }
 
-# Read a release ID only from a link that points to an installed JAR.
+# Return the release ID only when the link resolves to an installed JAR.
 get_release_id() {
     local link_path="$1"
     local release_path
@@ -35,7 +37,7 @@ get_release_id() {
     basename -- "$release_path"
 }
 
-# Rename a prepared link over the old one so the pointer changes in one step.
+# Replace the current pointer atomically after preparing its temporary symlink.
 activate_release() {
     local release_id="$1"
     local temporary_link="$CURRENT.tmp.$$"
@@ -66,11 +68,11 @@ check_release_health() {
     local attempt health_response version_response
 
     for ((attempt=1; attempt<=8; attempt++)); do
-        # Allow failed requests so the loop can retry instead of exiting.
+        # A failed request is expected while the service restarts, so retry it.
         health_response=$(curl -fsS --max-time 2 http://127.0.0.1:8080/health 2>/dev/null || true)
         version_response=$(curl -fsS --max-time 2 http://127.0.0.1:8080/version 2>/dev/null || true)
 
-        # A healthy response must also come from the requested release.
+        # Confirm both service health and that the requested release is running.
         if [[ "$health_response" == OK && "$version_response" == "$expected_release" ]]; then
             return 0
         fi
@@ -83,26 +85,26 @@ check_release_health() {
 
 prepare_environment() {
     if (( EUID != 0 )); then
-        print_error_and_exit 'Use sudo.'
+        print_error_and_exit 'Run this command with sudo (for example: sudo ./deploylatch.sh status).'
     fi
 
     for executable in systemctl curl flock; do
         if ! command -v "$executable" >/dev/null; then
-            print_error_and_exit "Missing $executable"
+            print_error_and_exit "Required command '$executable' was not found. Install it and try again."
         fi
     done
 
     if ! systemctl cat "$SERVICE" >/dev/null 2>&1; then
-        print_error_and_exit "Install $SERVICE first."
+        print_error_and_exit "Systemd service '$SERVICE' is not installed. Install its unit file first."
     fi
 
     install -d -m 0755 "$RELEASES" /var/log/deploylatch
     touch "$LOG"
 
-    # File descriptor 9 keeps the exclusive lock open until this command exits.
+    # Keep the exclusive lock open for the full command to prevent concurrent changes.
     exec 9>"$ROOT/.deploy.lock"
     if ! flock -n 9; then
-        print_error_and_exit 'Another deployment is running.'
+        print_error_and_exit 'Another DeployLatch command is running. Wait for it to finish, then retry.'
     fi
 }
 
@@ -112,18 +114,18 @@ deploy_release() {
     local old_release=''
 
     if [[ ! -f "$source_jar" || ! -r "$source_jar" ]]; then
-        print_error_and_exit 'JAR not readable.'
+        print_error_and_exit "JAR '$source_jar' does not exist or cannot be read. Check the path and permissions."
     fi
 
     if [[ ! "$new_release" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ ]]; then
-        print_error_and_exit 'Invalid release ID.'
+        print_error_and_exit "Invalid release ID '$new_release'. Use letters, numbers, dot, underscore, or hyphen; start with a letter or number."
     fi
 
     if [[ -e "$RELEASES/$new_release" ]]; then
         print_error_and_exit "Release already exists: $new_release"
     fi
 
-    # Keep the old release available while installing the new one separately.
+    # Record the active release so it can be restored if the new one fails.
     old_release=$(get_release_id "$CURRENT" || true)
     install -d -m 0755 "$RELEASES/$new_release"
     install -m 0644 -- "$source_jar" "$RELEASES/$new_release/app.jar"
@@ -142,7 +144,7 @@ deploy_release() {
 
     printf 'Deployment failed: %s\n' "$new_release" >&2
 
-    # If there was no old release, there is nothing to restore.
+    # With no earlier release, stop the failed service and remove its pointer.
     if [[ -z "$old_release" ]]; then
         systemctl stop "$SERVICE" || true
         rm -f "$CURRENT"
@@ -156,7 +158,7 @@ deploy_release() {
         printf 'Restored %s\n' "$old_release"
     else
         write_deployment_log ROLLBACK_FAILED "$new_release" "Failed to recover $old_release"
-        printf 'Recovery failed; inspect journalctl.\n' >&2
+        printf 'Automatic recovery failed. Check the service logs with: journalctl -u %s\n' "$SERVICE" >&2
     fi
 
     # Recovery does not make the requested deployment successful.
@@ -167,11 +169,11 @@ rollback_release() {
     local active_release rollback_target
 
     if ! active_release=$(get_release_id "$CURRENT"); then
-        print_error_and_exit 'No active release.'
+        print_error_and_exit 'No valid active release was found. Deploy a release before rolling back.'
     fi
 
     if ! rollback_target=$(get_release_id "$PREVIOUS"); then
-        print_error_and_exit 'No previous release.'
+        print_error_and_exit 'No valid previous release was found. A successful deployment is needed before rollback.'
     fi
 
     if [[ "$active_release" == "$rollback_target" ]]; then
@@ -188,6 +190,8 @@ rollback_release() {
         activate_release "$active_release"
         systemctl restart "$SERVICE" || true
         write_deployment_log ROLLBACK_FAILED "$rollback_target" "Restored pointer to $active_release"
+        printf 'Rollback to %s failed; restored the active pointer to %s. Check the service logs with: journalctl -u %s\n' \
+            "$rollback_target" "$active_release" "$SERVICE" >&2
         return 1
     fi
 }
@@ -209,12 +213,19 @@ show_status() {
 }
 
 show_usage() {
-    printf '%s\n' 'Usage: deploylatch.sh deploy JAR RELEASE_ID | rollback | status | history'
+    printf '%s\n' \
+        'Usage:' \
+        '  deploylatch.sh deploy JAR RELEASE_ID  Install and verify a release' \
+        '  deploylatch.sh rollback               Restore the previous release' \
+        '  deploylatch.sh status                 Show release and service health' \
+        '  deploylatch.sh history                Show recent deployment history' \
+        '  deploylatch.sh help                   Show this help'
 }
 
 # Read the action first; the remaining arguments belong to that action.
 if (( $# == 0 )); then
     show_usage
+    printf 'Error: missing command.\n' >&2
     exit 1
 fi
 
@@ -224,28 +235,28 @@ shift
 case "$action" in
     deploy)
         if (( $# != 2 )); then
-            print_error_and_exit 'Expected JAR and release ID.'
+            print_error_and_exit 'Deploy needs a JAR path and release ID. Example: ./deploylatch.sh deploy app.jar v1.'
         fi
         prepare_environment
         deploy_release "$1" "$2"
         ;;
     rollback)
         if (( $# != 0 )); then
-            print_error_and_exit 'Unexpected arguments.'
+            print_error_and_exit 'The rollback command does not accept extra arguments.'
         fi
         prepare_environment
         rollback_release
         ;;
     status)
         if (( $# != 0 )); then
-            print_error_and_exit 'Unexpected arguments.'
+            print_error_and_exit 'The status command does not accept extra arguments.'
         fi
         prepare_environment
         show_status
         ;;
     history)
         if (( $# != 0 )); then
-            print_error_and_exit 'Unexpected arguments.'
+            print_error_and_exit 'The history command does not accept extra arguments.'
         fi
         prepare_environment
         if [[ -s "$LOG" ]]; then
@@ -259,6 +270,7 @@ case "$action" in
         ;;
     *)
         show_usage
+        printf "Error: unknown command '%s'.\n" "$action" >&2
         exit 1
         ;;
 esac
